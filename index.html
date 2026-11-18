@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EchoBox — 极简桌面网盘聚合搜索器</title>
-  <meta name="description" content="EchoBox 是一款轻量级桌面网盘聚合搜索工具，支持 Option+Space / Alt+Space 全局 Spotlight 唤起、多源聚合与自动测活、纯本地运行零隐私上传。" />
+  <title>EchoBox — 极简桌面信息聚合搜索器</title>
+  <meta name="description" content="EchoBox 是一款本地规则驱动的桌面聚合搜索工具，支持 Option+Space / Alt+Space 全局 Spotlight 唤起、自定义 JSON / HTML 规则订阅、链接可用性检测与批量导出，纯本地运行零隐私上传。" />
   <style>
     :root {
       --bg: #090b10;
@@ -566,9 +566,9 @@
           <span class="badge">纯本地 SQLite · 零隐私上传</span>
         </div>
 
-        <h1>极简桌面网盘与海外资源聚合搜索器</h1>
+        <h1>极简桌面信息聚合搜索器</h1>
         <p class="hero-sub">
-          按下 <span class="kbd">Option + Space</span> 或 <span class="kbd">Alt + Space</span> 随叫随到。聚合国内主流网盘（夸克/阿里/115/百度/123）与海外磁力、Internet Archive 公开库并自动测活，配合离线下载一步直达。
+          按下 <span class="kbd">Option + Space</span> 或 <span class="kbd">Alt + Space</span> 随叫随到。本地规则驱动的桌面聚合搜索工具，支持自定义 JSON / HTML 规则订阅、链接可用性检测与批量导出，纯本地运行零隐私上传。
         </p>
 
         <div class="download-group">
@@ -589,28 +589,28 @@
         <div class="spotlight-window" aria-label="EchoBox 搜索窗口预览">
           <div class="spotlight-search">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <div class="spotlight-input">沙丘 2 4K REMUX</div>
+            <div class="spotlight-input">Python 3.12 官方文档</div>
             <span class="kbd">Option + Space</span>
           </div>
           <div class="spotlight-results">
             <div class="result-row active">
               <div>
-                <div class="result-title">沙丘2.Dune.Part.Two.2024.2160p.UHD.BluRay.REMUX</div>
-                <div class="result-sub">阿里云盘 · 社区精选源 · 78.4 GB</div>
+                <div class="result-title">Python 3.12.7 Documentation &amp; Offline HTML Bundle</div>
+                <div class="result-sub">官方开源文档 · 自定义规则源 · HTML/PDF</div>
               </div>
               <span class="pill-live">● 测活有效</span>
             </div>
             <div class="result-row">
               <div>
-                <div class="result-title">Dune Part Two (2024) 4K HDR10+ 中字收藏版</div>
-                <div class="result-sub">夸克网盘 · 自定义订阅源 · 32.1 GB</div>
+                <div class="result-title">Ubuntu 24.04.1 LTS Desktop (amd64) 官方镜像</div>
+                <div class="result-sub">开源镜像站 · 规则聚合 · 5.8 GB</div>
               </div>
               <span class="pill-live">● 测活有效</span>
             </div>
             <div class="result-row">
               <div>
-                <div class="result-title">沙丘1+2 合集 4K高码率杜比视界</div>
-                <div class="result-sub">百度网盘 · 聚合源 · 64.0 GB</div>
+                <div class="result-title">Awesome-Python 开源工具与框架合集</div>
+                <div class="result-sub">GitHub 开源检索 · 示例规则 · MIT</div>
               </div>
               <span class="pill-live">● 测活有效</span>
             </div>
@@ -623,7 +623,7 @@
       <div class="container">
         <div class="section-head">
           <h2>为桌面效率而生的设计</h2>
-          <p>告别繁杂广告网页与失效链接，把网盘搜索放进系统级快捷键里</p>
+          <p>告别繁杂广告网页与失效链接，把多源规则检索放进系统级快捷键里</p>
         </div>
         <div class="features-grid">
           <div class="card">
@@ -633,13 +633,13 @@
           </div>
           <div class="card">
             <div class="card-icon">⚡</div>
-            <h3>多源聚合 + 自动测活</h3>
-            <p>并发请求多个网盘索引源，自动识别并过滤失效分享链接，实时标注有效状态，省去逐个点开验证的时间。</p>
+            <h3>多源规则聚合 + 可用性检测</h3>
+            <p>并发请求多个自定义 JSON / HTML 规则源，自动识别并过滤失效链接，实时标注可用状态，支持批量导出结果，省去逐个点开验证的时间。</p>
           </div>
           <div class="card">
             <div class="card-icon">🔄</div>
-            <h3>国内网盘 + 海外磁力双线同步</h3>
-            <p>支持导入个人自定义搜索源规则；内置社区精选源每 3 小时自动增量同步，同时覆盖国内网盘与海外磁力 / Archive 公开库，配合 115 / 夸克 / PikPak 离线下载更高效。</p>
+            <h3>自定义 JSON / HTML 规则订阅</h3>
+            <p>支持导入与编写个人 JSON / HTML 解析规则及官方示范规则集，按需增量同步公开索引与开源仓库（如 GitHub / NPM / 公开文档库），统一聚合展示。</p>
           </div>
           <div class="card">
             <div class="card-icon">🔒</div>
@@ -665,8 +665,8 @@
               </div>
               <ul class="price-list">
                 <li>Spotlight 全局快捷键唤起</li>
-                <li>社区精选搜索源与自动同步</li>
-                <li>多网盘并发聚合搜索</li>
+                <li>示范规则集与本地规则导入</li>
+                <li>多规则源并发聚合搜索</li>
                 <li>纯本地 SQLite 存储，零隐私上传</li>
               </ul>
             </div>
@@ -725,6 +725,12 @@
               EchoBox 采用本地离线激活校验机制，无需联网验证服务器。在软件「设置 → Pro 激活」中输入激活码即可立即解锁全部功能，重装系统后使用同一激活码即可恢复。
             </p>
           </div>
+          <div class="faq-item">
+            <h3>4. 《合规与免责声明》EchoBox 是否提供或存储任何第三方链接或文件？</h3>
+            <p>
+              EchoBox 为纯本地规则解析与信息聚合搜索工具，不托管、不存储、不索引也不分发任何第三方链接、文件或受版权保护的内容。所有搜索规则与检索目标均由用户自行配置或导入，请仅将本工具用于合法合规的公开信息、开源项目与个人授权资料检索。
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -732,7 +738,8 @@
 
   <footer>
     <div class="container">
-      <p>EchoBox · 极简桌面网盘与海外资源聚合搜索器 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">Releases</a> · <a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener">爱发电官方主页</a></p>
+      <p>EchoBox · 极简桌面信息聚合搜索器 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">Releases</a> · <a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener">爱发电官方主页</a></p>
+      <p style="margin-top: 8px; font-size: 0.8rem;">合规与免责声明：EchoBox 为纯本地规则解析工具，不托管、不存储、不分发任何第三方链接或文件。</p>
     </div>
   </footer>
 
