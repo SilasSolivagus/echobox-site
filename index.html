@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EchoBox — 极简桌面网盘聚合搜索器</title>
+  <meta name="description" content="EchoBox 是一款轻量级桌面网盘聚合搜索工具，支持 Option+Space / Alt+Space 全局 Spotlight 唤起、多源聚合与自动测活、纯本地运行零隐私上传。" />
+  <style>
+    :root {
+      --bg: #090b10;
+      --bg-elevated: rgba(20, 24, 34, 0.78);
+      --bg-card: rgba(255, 255, 255, 0.035);
+      --bg-card-hover: rgba(255, 255, 255, 0.06);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f3f5f9;
+      --text-muted: #98a2b3;
+      --text-subtle: #667085;
+      --accent: #60a5fa;
+      --accent-2: #818cf8;
+      --accent-glow: rgba(96, 165, 250, 0.25);
+      --green: #34d399;
+      --amber: #fbbf24;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --max-w: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(900px 500px at 50% -120px, rgba(96, 165, 250, 0.16), transparent 70%),
+        radial-gradient(700px 420px at 85% 18%, rgba(129, 140, 248, 0.10), transparent 70%),
+        var(--bg);
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(9, 11, 16, 0.72);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.08rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #3b82f6 0%, #818cf8 100%);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+      font-size: 0.95rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.14);
+      border: 1px solid rgba(96, 165, 250, 0.35);
+      color: #bfdbfe !important;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .nav-cta:hover {
+      background: rgba(96, 165, 250, 0.24);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 84px 0 64px;
+      text-align: center;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .badge .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #b8c4d9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      max-width: 640px;
+      margin: 0 auto 34px;
+      color: var(--text-muted);
+      font-size: 1.06rem;
+    }
+
+    .download-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-size: 0.96rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 28px rgba(59, 130, 246, 0.28);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 14px 34px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .download-meta {
+      font-size: 0.84rem;
+      color: var(--text-subtle);
+      margin-bottom: 48px;
+    }
+
+    .download-meta a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Spotlight Mockup */
+    .spotlight-window {
+      max-width: 760px;
+      margin: 0 auto;
+      border-radius: var(--radius-lg);
+      background: rgba(18, 22, 31, 0.88);
+      border: 1px solid var(--border-strong);
+      box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .spotlight-search {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spotlight-search svg {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .spotlight-input {
+      flex: 1;
+      font-size: 1.08rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
+    }
+
+    .spotlight-results {
+      padding: 10px 12px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .result-row.active {
+      background: rgba(96, 165, 250, 0.13);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+    }
+
+    .result-title {
+      font-size: 0.93rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .result-sub {
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    .pill-live {
+      font-size: 0.75rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(52, 211, 153, 0.14);
+      color: var(--green);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      white-space: nowrap;
+    }
+
+    /* Sections */
+    section {
+      padding: 72px 0;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .section-head p {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+    }
+
+    /* Feature Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      padding: 26px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      color: var(--accent);
+      margin-bottom: 16px;
+      font-size: 1.15rem;
+    }
+
+    .card h3 {
+      font-size: 1.08rem;
+      font-weight: 650;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    /* Pricing */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .price-card {
+      padding: 30px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .price-card.pro {
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.11) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border-color: rgba(96, 165, 250, 0.42);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.12);
+    }
+
+    .price-tag {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      background: rgba(251, 191, 36, 0.16);
+      color: var(--amber);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .price-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .price-amount {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 14px 0 20px;
+    }
+
+    .price-now {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .price-old {
+      color: var(--text-subtle);
+      text-decoration: line-through;
+      font-size: 1rem;
+    }
+
+    .price-list {
+      list-style: none;
+      display: grid;
+      gap: 11px;
+      margin-bottom: 26px;
+      font-size: 0.93rem;
+      color: var(--text-muted);
+    }
+
+    .price-list li::before {
+      content: "✓";
+      color: var(--green);
+      font-weight: 700;
+      margin-right: 9px;
+    }
+
+    .buy-guide-box {
+      max-width: 860px;
+      margin: 26px auto 0;
+      padding: 22px 26px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--border-strong);
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .buy-guide-box strong {
+      color: var(--text);
+    }
+
+    /* FAQ */
+    .faq-list {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .faq-item {
+      padding: 22px 24px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .faq-item h3 {
+      font-size: 1rem;
+      font-weight: 650;
+      margin-bottom: 8px;
+    }
+
+    .faq-item p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.86em;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0 44px;
+      text-align: center;
+      color: var(--text-subtle);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 760px) {
+      .nav-links {
+        display: none;
+      }
+      .features-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero {
+        padding-top: 56px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand">
+        <span class="brand-icon">⌘</span>
+        <span>EchoBox</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">核心特性</a>
+        <a href="#buy-pro">Free / Pro</a>
+        <a href="#faq">常见问题</a>
+        <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener" class="nav-cta">下载最新版</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="badges">
+          <span class="badge"><span class="dot"></span> 当前版本 <span id="version-badge">v0.3.4</span></span>
+          <span class="badge">macOS Universal (M1-M4 / Intel)</span>
+          <span class="badge">Windows x64</span>
+          <span class="badge">纯本地 SQLite · 零隐私上传</span>
+        </div>
+
+        <h1>极简桌面网盘聚合搜索器</h1>
+        <p class="hero-sub">
+          按下 <span class="kbd">Option + Space</span> 或 <span class="kbd">Alt + Space</span> 随叫随到。并发聚合多源网盘资源并自动测活，结果直达剪贴板与浏览器。
+        </p>
+
+        <div class="download-group">
+          <a id="btn-macos" class="btn btn-primary" href="https://github.com/SilasSolivagus/echobox-site/releases/latest/download/EchoBox-macos-universal.zip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3"/></svg>
+            <span>下载 macOS 版 (Universal)</span>
+          </a>
+          <a id="btn-windows" class="btn btn-secondary" href="https://github.com/SilasSolivagus/echobox-site/releases/latest/download/EchoBox-windows-amd64.zip">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.45L10.94 4.3v7.1H3V5.45zm0 13.1l7.94 1.15v-7.05H3v5.9zm8.89-14.39L21 2.9v8.5h-9.11V4.16zm0 15.68L21 21.1v-8.45h-9.11v7.19z"/></svg>
+            <span id="btn-windows-label">下载 Windows 版 (x64)</span>
+          </a>
+        </div>
+
+        <p class="download-meta">
+          也可前往 <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener">GitHub Releases</a> 查看全部历史版本与校验文件
+        </p>
+
+        <div class="spotlight-window" aria-label="EchoBox 搜索窗口预览">
+          <div class="spotlight-search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <div class="spotlight-input">沙丘 2 4K REMUX</div>
+            <span class="kbd">Option + Space</span>
+          </div>
+          <div class="spotlight-results">
+            <div class="result-row active">
+              <div>
+                <div class="result-title">沙丘2.Dune.Part.Two.2024.2160p.UHD.BluRay.REMUX</div>
+                <div class="result-sub">阿里云盘 · 社区精选源 · 78.4 GB</div>
+              </div>
+              <span class="pill-live">● 测活有效</span>
+            </div>
+            <div class="result-row">
+              <div>
+                <div class="result-title">Dune Part Two (2024) 4K HDR10+ 中字收藏版</div>
+                <div class="result-sub">夸克网盘 · 自定义订阅源 · 32.1 GB</div>
+              </div>
+              <span class="pill-live">● 测活有效</span>
+            </div>
+            <div class="result-row">
+              <div>
+                <div class="result-title">沙丘1+2 合集 4K高码率杜比视界</div>
+                <div class="result-sub">百度网盘 · 聚合源 · 64.0 GB</div>
+              </div>
+              <span class="pill-live">● 测活有效</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-head">
+          <h2>为桌面效率而生的设计</h2>
+          <p>告别繁杂广告网页与失效链接，把网盘搜索放进系统级快捷键里</p>
+        </div>
+        <div class="features-grid">
+          <div class="card">
+            <div class="card-icon">⌘</div>
+            <h3>Spotlight 全局唤起</h3>
+            <p>支持 macOS <code>Option + Space</code> 与 Windows <code>Alt + Space</code> 全局快捷键，任何界面一键呼出悬浮搜索框，ESC 即刻隐藏。</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>多源聚合 + 自动测活</h3>
+            <p>并发请求多个网盘索引源，自动识别并过滤失效分享链接，实时标注有效状态，省去逐个点开验证的时间。</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔄</div>
+            <h3>自定义订阅 + 社区精选同步</h3>
+            <p>支持导入个人自定义搜索源规则；内置社区精选源，每 3 小时自动增量同步一次，保持搜索源长期可用。</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔒</div>
+            <h3>纯本地空壳，零隐私上传</h3>
+            <p>软件本体为纯本地桌面应用，所有搜索记录、订阅源配置与缓存均保存在本地 SQLite 数据库，不收集、不上传任何用户数据。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="buy-pro">
+      <div class="container">
+        <div class="section-head">
+          <h2>Free 免费版与 Pro 永久买断</h2>
+          <p>基础搜索永久免费，Pro 一次买断解锁完整效率体验</p>
+        </div>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div>
+              <div class="price-title">Free 免费版</div>
+              <div class="price-amount">
+                <span class="price-now">¥0</span>
+              </div>
+              <ul class="price-list">
+                <li>Spotlight 全局快捷键唤起</li>
+                <li>社区精选搜索源与自动同步</li>
+                <li>多网盘并发聚合搜索</li>
+                <li>纯本地 SQLite 存储，零隐私上传</li>
+              </ul>
+            </div>
+            <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener" class="btn btn-secondary">免费下载使用</a>
+          </div>
+
+          <div class="price-card pro">
+            <div>
+              <span class="price-tag">早鸟特惠</span>
+              <div class="price-title">Pro 永久买断版</div>
+              <div class="price-amount">
+                <span class="price-now">¥19.9</span>
+                <span class="price-old">原价 ¥39</span>
+              </div>
+              <ul class="price-list">
+                <li>包含 Free 免费版全部功能</li>
+                <li>无限自定义订阅源导入与管理</li>
+                <li>高并发批量链接自动测活</li>
+                <li>离线激活码授权，一次买断永久有效</li>
+              </ul>
+            </div>
+            <a href="#buy-guide" class="btn btn-primary">立即购买 Pro 激活码</a>
+          </div>
+        </div>
+
+        <div id="buy-guide" class="buy-guide-box">
+          <strong>购买与发卡占位说明：</strong>
+          当前页面「立即购买 Pro 激活码」按钮链接至本说明区。正式上线发卡时，只需将上方按钮的 <code>href="#buy-guide"</code> 替换为你的<strong>面包多</strong>或<strong>爱发电</strong>商品链接即可自动发卡；用户获取离线激活码后，在 EchoBox 设置页粘贴激活即可解锁全部 Pro 功能。
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-head">
+          <h2>常见问题 (FAQ)</h2>
+          <p>首次安装与激活说明</p>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>1. macOS 提示“无法验证开发者”或“已损坏”怎么办？</h3>
+            <p>
+              由于开源桌面版暂未购买 Apple 开发者年费签名，首次打开时可在「访达 → 应用程序」中<strong>右键点击 EchoBox.app → 打开</strong>；若仍提示已损坏，可在终端执行一次：
+              <code>xattr -cr /Applications/EchoBox.app</code> 后即可正常打开。
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>2. Windows 提示 SmartScreen“Windows 已保护你的电脑”怎么办？</h3>
+            <p>
+              未购买商业 EV 代码签名的独立软件均会触发该提示。点击弹窗中的<strong>「更多信息」</strong>，然后点击底部的<strong>「仍要运行」</strong>即可启动 EchoBox。
+            </p>
+          </div>
+          <div class="faq-item">
+            <h3>3. Pro 离线激活码如何使用？更换设备怎么办？</h3>
+            <p>
+              EchoBox 采用本地离线激活校验机制，无需联网验证服务器。在软件「设置 → Pro 激活」中输入激活码即可立即解锁全部功能，重装系统后使用同一激活码即可恢复。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>EchoBox · 极简桌面网盘聚合搜索器 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">Releases</a></p>
+    </div>
+  </footer>
+
+  <script>
+    (async function hydrateLatestRelease() {
+      const api = "https://api.github.com/repos/SilasSolivagus/echobox-site/releases/latest";
+      try {
+        const res = await fetch(api, { headers: { Accept: "application/vnd.github+json" } });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.tag_name) {
+          const badge = document.getElementById("version-badge");
+          if (badge) badge.textContent = data.tag_name;
+        }
+        const assets = Array.isArray(data.assets) ? data.assets : [];
+        const macAsset = assets.find((a) => /macos.*\.zip$/i.test(a.name));
+        const winAsset = assets.find((a) => /windows.*\.zip$/i.test(a.name));
+        const macBtn = document.getElementById("btn-macos");
+        const winBtn = document.getElementById("btn-windows");
+        const winLabel = document.getElementById("btn-windows-label");
+        if (macAsset && macBtn) {
+          macBtn.href = macAsset.browser_download_url;
+        }
+        if (winAsset && winBtn) {
+          winBtn.href = winAsset.browser_download_url;
+        } else if (winBtn && winLabel) {
+          winBtn.href = data.html_url || "https://github.com/SilasSolivagus/echobox-site/releases/latest";
+          winLabel.textContent = "Windows 版 (前往 Releases)";
+        }
+      } catch (_) {
+        // Fallback links already point to GitHub Releases.
+      }
+    })();
+  </script>
+</body>
+</html>
