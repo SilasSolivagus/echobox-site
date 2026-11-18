@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EchoBox — 按下键盘就能搜，全网结果一秒聚齐</title>
-  <meta name="description" content="EchoBox 是一款简单好用的桌面聚合搜索工具。按一下快捷键随时呼出，自动帮你从多个常用网站聚齐结果并检测哪些还能打开，全在本地运行，不用注册登录。" />
+  <title>回声 (EchoBox) — 只属于你的自定义信息搜索框</title>
+  <meta name="description" content="回声 (EchoBox) — 只属于你的自定义信息搜索框。按一下快捷键随时呼出，支持 AI 10 秒生成规则与公开 RSS/API 订阅，全在本地运行，不用注册登录。" />
+  <link rel="icon" type="image/png" href="./favicon.png" />
   <style>
     :root {
       --bg: #07090e;
@@ -979,6 +980,178 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* GIF Showcase */
+    .gif-showcase {
+      margin: 28px auto 0;
+      max-width: 900px;
+      border-radius: var(--radius-lg);
+      background: rgba(13, 18, 30, 0.85);
+      border: 1px solid var(--border-strong);
+      padding: 14px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.52);
+    }
+
+    .gif-showcase-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 8px 12px;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .gif-showcase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.14);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      color: #93c5fd;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+
+    .gif-showcase img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Packs Plaza */
+    .packs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .pack-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .pack-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .pack-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .pack-author {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #93c5fd;
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.26);
+    }
+
+    .pack-count {
+      font-size: 0.78rem;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .pack-card h3 {
+      font-size: 1.12rem;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .pack-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .pack-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pack-tag {
+      font-size: 0.76rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+    }
+
+    .pack-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pack-copy-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.28);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .pack-copy-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    .pack-sub-links {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 0 2px;
+    }
+
+    .pack-sub-links a,
+    .pack-sub-links button {
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-size: 0.8rem;
+    }
+
+    .pack-sub-links a:hover,
+    .pack-sub-links button:hover {
+      color: var(--text);
+    }
+
+    @media (max-width: 920px) {
+      .packs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 760px) {
       .nav-links a:not(.nav-cta),
       .nav-qq-pill {
@@ -1013,11 +1186,12 @@
   <header>
     <div class="container nav">
       <a href="#" class="brand">
-        <span class="brand-icon">⌘</span>
-        <span>EchoBox</span>
+        <img src="./assets/logo.png" alt="回声 EchoBox" width="28" height="28" style="border-radius:7px;display:block;" />
+        <span>回声 (EchoBox)</span>
       </a>
       <nav class="nav-links">
         <a href="#features">核心功能</a>
+        <a href="#packs">精选规则包</a>
         <a href="#buy-pro">免费版 / Pro</a>
         <a href="#faq">常见问题</a>
         <button type="button" class="nav-qq-pill" data-copy-qq="815135467" title="点击复制 QQ 群号">
@@ -1032,23 +1206,23 @@
     <section class="hero">
       <div class="container">
         <div class="badges">
-          <span class="badge"><span class="dot"></span> 当前版本 <span id="version-badge">v0.4.0</span></span>
+          <span class="badge"><span class="dot"></span> 当前版本 <span id="version-badge">v0.5.0</span></span>
           <span class="badge">支持苹果电脑 Mac（M 芯片 / Intel 通用）</span>
           <span class="badge">支持 Windows 电脑（64 位）</span>
           <span class="badge">全在本地跑 · 不用注册登录</span>
         </div>
 
-        <h1>按下键盘就能搜，全网结果一秒聚齐</h1>
+        <h1>只属于你的自定义信息搜索框</h1>
         <p class="hero-sub">
-          不用再翻十几个网页找资源、点开十个九个失效。按一下快捷键，自动帮你聚齐并测出能打开的结果。
+          回声 (EchoBox) 让你按一下快捷键随时呼出搜索，用 AI 10 秒把常逛网站与 RSS 接入本地，自动聚齐并测活结果。
         </p>
 
         <div class="download-group">
-          <a id="btn-macos" class="btn btn-primary" href="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.4.0/downloads/EchoBox-v0.4.0-macos-universal.zip">
+          <a id="btn-macos" class="btn btn-primary" href="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.5.0/downloads/EchoBox-v0.5.0-macos-universal.zip">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3"/></svg>
             <span>下载苹果 Mac 版</span>
           </a>
-          <a id="btn-windows" class="btn btn-secondary" href="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.4.0/downloads/EchoBox-v0.4.0-windows-amd64.zip">
+          <a id="btn-windows" class="btn btn-secondary" href="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.5.0/downloads/EchoBox-v0.5.0-windows-amd64.zip">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.45L10.94 4.3v7.1H3V5.45zm0 13.1l7.94 1.15v-7.05H3v5.9zm8.89-14.39L21 2.9v8.5h-9.11V4.16zm0 15.68L21 21.1v-8.45h-9.11v7.19z"/></svg>
             <span id="btn-windows-label">下载 Windows 版</span>
           </a>
@@ -1121,6 +1295,14 @@
             </div>
           </div>
         </div>
+
+        <div class="gif-showcase" aria-label="回声 EchoBox 三步完整流程演示">
+          <div class="gif-showcase-head">
+            <span class="gif-showcase-badge">🎬 3 步完整演示</span>
+            <span>复制 AI 口令 10 秒生成规则 → 粘贴导入回声 → ⌥+Space 一键聚合搜索并收藏</span>
+          </div>
+          <img src="./assets/echobox-demo.gif" alt="回声 (EchoBox) 三步操作演示：复制 AI 口令生成规则、粘贴导入、快捷键聚合搜索并收藏" width="900" height="540" loading="lazy" />
+        </div>
       </div>
     </section>
 
@@ -1151,6 +1333,92 @@
             <h3>全在本地跑，不用注册登录</h3>
             <p>不用注册账号、不上传你的任何搜索记录，所有配置和记录都只存在你自己的电脑里，装好就能用。</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="packs">
+      <div class="container">
+        <div class="section-head">
+          <h2>精选规则包广场</h2>
+          <p>100% 公开合法的 RSS 订阅与官方开放 API，复制订阅链接即可一键导入「回声 (EchoBox)」</p>
+        </div>
+
+        <div class="packs-grid">
+          <article class="pack-card">
+            <div>
+              <div class="pack-top">
+                <span class="pack-author">作者：回声 EchoBox 官方</span>
+                <span class="pack-count">3 个公开源</span>
+              </div>
+              <h3>科技与 AI 前沿日报</h3>
+              <p class="pack-desc">聚合 Hacker News 公开检索 API 与少数派、36氪官方 RSS，一手科技与 AI 资讯按一下随时搜。</p>
+              <div class="pack-tags">
+                <span class="pack-tag">Hacker News API</span>
+                <span class="pack-tag">少数派 RSS</span>
+                <span class="pack-tag">36氪 RSS</span>
+              </div>
+            </div>
+            <div class="pack-actions">
+              <button type="button" class="pack-copy-btn" data-copy-pack="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@main/packs/tech-ai-daily.json" data-pack-name="科技与 AI 前沿日报">
+                复制订阅链接
+              </button>
+              <div class="pack-sub-links">
+                <button type="button" data-copy-qq="815135467">投稿规则 (QQ群 815135467)</button>
+                <a href="https://afdian.com/item/37f6cb2ee30111f1b53252540025c377" target="_blank" rel="noopener">赞赏作者</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="pack-card">
+            <div>
+              <div class="pack-top">
+                <span class="pack-author">作者：回声 EchoBox 官方</span>
+                <span class="pack-count">3 个公开源</span>
+              </div>
+              <h3>开源项目与开发者检索</h3>
+              <p class="pack-desc">直连 GitHub 开源仓库检索、NPM Registry 官方 API 与阮一峰周刊 RSS，写代码找轮子一步到位。</p>
+              <div class="pack-tags">
+                <span class="pack-tag">GitHub Search API</span>
+                <span class="pack-tag">NPM Registry API</span>
+                <span class="pack-tag">阮一峰周刊 RSS</span>
+              </div>
+            </div>
+            <div class="pack-actions">
+              <button type="button" class="pack-copy-btn" data-copy-pack="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@main/packs/dev-opensource.json" data-pack-name="开源项目与开发者检索">
+                复制订阅链接
+              </button>
+              <div class="pack-sub-links">
+                <button type="button" data-copy-qq="815135467">投稿规则 (QQ群 815135467)</button>
+                <a href="https://afdian.com/item/37f6cb2ee30111f1b53252540025c377" target="_blank" rel="noopener">赞赏作者</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="pack-card">
+            <div>
+              <div class="pack-top">
+                <span class="pack-author">作者：回声 EchoBox 官方</span>
+                <span class="pack-count">3 个公开源</span>
+              </div>
+              <h3>独立博客与深度阅读</h3>
+              <p class="pack-desc">收录 V2EX 热门讨论公开 JSON 接口与少数派、爱范儿公开 RSS，告别算法信息茧房。</p>
+              <div class="pack-tags">
+                <span class="pack-tag">V2EX 热门 JSON</span>
+                <span class="pack-tag">少数派 RSS</span>
+                <span class="pack-tag">爱范儿 RSS</span>
+              </div>
+            </div>
+            <div class="pack-actions">
+              <button type="button" class="pack-copy-btn" data-copy-pack="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@main/packs/indie-reading.json" data-pack-name="独立博客与深度阅读">
+                复制订阅链接
+              </button>
+              <div class="pack-sub-links">
+                <button type="button" data-copy-qq="815135467">投稿规则 (QQ群 815135467)</button>
+                <a href="https://afdian.com/item/37f6cb2ee30111f1b53252540025c377" target="_blank" rel="noopener">赞赏作者</a>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -1267,8 +1535,8 @@
 
   <footer>
     <div class="container">
-      <p>EchoBox · 桌面聚合搜索工具 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">安装包下载</a> · <a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener">爱发电官方主页</a> · QQ 交流与规则群：<button type="button" data-copy-qq="815135467" style="color:inherit;text-decoration:underline;font-size:inherit;">815135467</button></p>
-      <p style="margin-top: 8px; font-size: 0.8rem;">合规与免责声明：EchoBox 为纯本地规则解析工具，不托管、不存储、不分发任何第三方链接或文件。</p>
+      <p>回声 (EchoBox) · 只属于你的自定义信息搜索框 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">安装包下载</a> · <a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener">爱发电官方主页</a> · QQ 交流与规则群：<button type="button" data-copy-qq="815135467" style="color:inherit;text-decoration:underline;font-size:inherit;">815135467</button></p>
+      <p style="margin-top: 8px; font-size: 0.8rem;">合规与免责声明：回声 (EchoBox) 为纯本地规则解析工具，不托管、不存储、不分发任何第三方链接或文件。</p>
     </div>
   </footer>
 
@@ -1319,6 +1587,16 @@
           const qq = el.getAttribute("data-copy-qq") || "815135467";
           await copyText(qq);
           showGlobalToast("已复制 QQ 群号：" + qq);
+        });
+      });
+
+      document.querySelectorAll("[data-copy-pack]").forEach((el) => {
+        el.addEventListener("click", async () => {
+          const url = el.getAttribute("data-copy-pack");
+          const name = el.getAttribute("data-pack-name") || "规则包";
+          if (!url) return;
+          await copyText(url);
+          showGlobalToast("已复制「" + name + "」订阅链接，去回声粘贴导入");
         });
       });
     })();

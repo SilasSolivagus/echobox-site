@@ -1,0 +1,44 @@
+{
+  "name": "独立博客与深度阅读",
+  "author": "回声 EchoBox 官方",
+  "homepage": "https://silassolivagus.github.io/echobox-site/",
+  "rules": [
+    {
+      "id": "v2ex-hot-topics",
+      "name": "V2EX 今日热门讨论",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://www.v2ex.com/api/topics/hot.json",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "mode": "json",
+      "list_selector": "$[*]",
+      "title_selector": "title",
+      "link_selector": "url",
+      "summary_selector": "node.title",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    },
+    {
+      "id": "sspai-indie-rss",
+      "name": "少数派 · 效率与数字生活 RSS",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://sspai.com/feed",
+      "mode": "rss",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    },
+    {
+      "id": "ifanr-indie-rss",
+      "name": "爱范儿 · 深度科技报道 RSS",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://www.ifanr.com/feed",
+      "mode": "rss",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    }
+  ]
+}

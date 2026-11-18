@@ -1,0 +1,44 @@
+{
+  "name": "科技与 AI 前沿日报",
+  "author": "回声 EchoBox 官方",
+  "homepage": "https://silassolivagus.github.io/echobox-site/",
+  "rules": [
+    {
+      "id": "hn-algolia-stories",
+      "name": "Hacker News 前沿资讯",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://hn.algolia.com/api/v1/search?query={query}&tags=story&hitsPerPage=15",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "mode": "json",
+      "list_selector": "$.hits[*]",
+      "title_selector": "title",
+      "link_selector": "url",
+      "summary_selector": "author",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    },
+    {
+      "id": "sspai-rss-daily",
+      "name": "少数派 · 每日精选 RSS",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://sspai.com/feed",
+      "mode": "rss",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    },
+    {
+      "id": "36kr-rss-daily",
+      "name": "36氪 · 科技快讯 RSS",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://36kr.com/feed",
+      "mode": "rss",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    }
+  ]
+}

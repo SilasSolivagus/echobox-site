@@ -1,0 +1,51 @@
+{
+  "name": "开源项目与开发者检索",
+  "author": "回声 EchoBox 官方",
+  "homepage": "https://silassolivagus.github.io/echobox-site/",
+  "rules": [
+    {
+      "id": "github-repos-search",
+      "name": "GitHub 开源仓库检索",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://api.github.com/search/repositories?q={query}&per_page=15",
+      "headers": {
+        "Accept": "application/vnd.github+json"
+      },
+      "mode": "json",
+      "list_selector": "$.items[*]",
+      "title_selector": "full_name",
+      "link_selector": "html_url",
+      "summary_selector": "description",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    },
+    {
+      "id": "npm-registry-search",
+      "name": "NPM 开源包检索",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://registry.npmjs.org/-/v1/search?text={query}&size=15",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "mode": "json",
+      "list_selector": "$.objects[*]",
+      "title_selector": "package.name",
+      "link_selector": "package.links.npm",
+      "summary_selector": "package.description",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    },
+    {
+      "id": "ruanyifeng-weekly-rss",
+      "name": "阮一峰 · 科技爱好者周刊 RSS",
+      "enabled": true,
+      "method": "GET",
+      "search_url": "https://www.ruanyifeng.com/blog/atom.xml",
+      "mode": "rss",
+      "timeout_ms": 8000,
+      "rate_limit_ms": 500
+    }
+  ]
+}
