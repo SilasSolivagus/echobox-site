@@ -11,3 +11,4 @@
 - GitHub Releases 备用下载：https://github.com/SilasSolivagus/echobox-site/releases
 - 官方爱发电创作者主页：https://afdian.com/a/echoboxpro
 - EchoBox Pro 永久激活码直达购买页：https://afdian.com/item/37f6cb2ee30111f1b53252540025c377
+- 规则交流与反馈 QQ 群：815135467
