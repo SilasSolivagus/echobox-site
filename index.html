@@ -3,28 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EchoBox — 极简桌面信息聚合搜索器</title>
-  <meta name="description" content="EchoBox 是一款本地规则驱动的桌面聚合搜索工具，支持 Option+Space / Alt+Space 全局 Spotlight 唤起、自定义 JSON / HTML 规则订阅、链接可用性检测与批量导出，纯本地运行零隐私上传。" />
+  <title>EchoBox — 按下键盘就能搜，全网结果一秒聚齐</title>
+  <meta name="description" content="EchoBox 是一款简单好用的桌面聚合搜索工具。按一下快捷键随时呼出，自动帮你从多个常用网站聚齐结果并检测哪些还能打开，全在本地运行，不用注册登录。" />
   <style>
     :root {
-      --bg: #090b10;
-      --bg-elevated: rgba(20, 24, 34, 0.78);
-      --bg-card: rgba(255, 255, 255, 0.035);
-      --bg-card-hover: rgba(255, 255, 255, 0.06);
-      --border: rgba(255, 255, 255, 0.09);
+      --bg: #07090e;
+      --bg-surface: #0d111a;
+      --bg-elevated: rgba(17, 22, 34, 0.86);
+      --bg-card: rgba(255, 255, 255, 0.032);
+      --bg-card-hover: rgba(255, 255, 255, 0.058);
+      --border: rgba(255, 255, 255, 0.085);
       --border-strong: rgba(255, 255, 255, 0.16);
-      --text: #f3f5f9;
-      --text-muted: #98a2b3;
+      --text: #f4f6fb;
+      --text-muted: #9aa4b8;
       --text-subtle: #667085;
       --accent: #60a5fa;
       --accent-2: #818cf8;
-      --accent-glow: rgba(96, 165, 250, 0.25);
+      --accent-glow: rgba(96, 165, 250, 0.28);
       --green: #34d399;
+      --green-bg: rgba(52, 211, 153, 0.14);
+      --green-border: rgba(52, 211, 153, 0.3);
+      --red: #f87171;
+      --red-bg: rgba(248, 113, 113, 0.12);
       --amber: #fbbf24;
-      --radius-lg: 20px;
-      --radius-md: 14px;
+      --qq: #38bdf8;
+      --radius-lg: 22px;
+      --radius-md: 16px;
       --radius-sm: 10px;
-      --max-w: 1100px;
+      --max-w: 1120px;
     }
 
     * {
@@ -44,15 +50,25 @@
     body {
       min-height: 100vh;
       background:
-        radial-gradient(900px 500px at 50% -120px, rgba(96, 165, 250, 0.16), transparent 70%),
-        radial-gradient(700px 420px at 85% 18%, rgba(129, 140, 248, 0.10), transparent 70%),
+        radial-gradient(1000px 540px at 50% -140px, rgba(59, 130, 246, 0.18), transparent 70%),
+        radial-gradient(760px 440px at 88% 14%, rgba(129, 140, 248, 0.11), transparent 70%),
+        radial-gradient(640px 380px at 12% 36%, rgba(56, 189, 248, 0.07), transparent 70%),
         var(--bg);
       line-height: 1.65;
+      overflow-x: hidden;
     }
 
     a {
       color: inherit;
       text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
     }
 
     .container {
@@ -66,10 +82,10 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      background: rgba(9, 11, 16, 0.72);
+      z-index: 60;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(7, 9, 14, 0.76);
       border-bottom: 1px solid var(--border);
     }
 
@@ -78,6 +94,7 @@
       align-items: center;
       justify-content: space-between;
       height: 64px;
+      gap: 16px;
     }
 
     .brand {
@@ -85,50 +102,71 @@
       align-items: center;
       gap: 10px;
       font-weight: 700;
-      font-size: 1.08rem;
+      font-size: 1.1rem;
       letter-spacing: -0.02em;
     }
 
     .brand-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #3b82f6 0%, #818cf8 100%);
       display: grid;
       place-items: center;
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
-      font-size: 0.95rem;
+      box-shadow: 0 4px 18px rgba(59, 130, 246, 0.38);
+      font-size: 1rem;
+      color: #fff;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 22px;
       font-size: 0.92rem;
       color: var(--text-muted);
     }
 
-    .nav-links a:hover {
+    .nav-links a:hover,
+    .nav-links button:hover {
       color: var(--text);
     }
 
-    .nav-cta {
-      padding: 7px 14px;
+    .nav-qq-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(96, 165, 250, 0.14);
-      border: 1px solid rgba(96, 165, 250, 0.35);
-      color: #bfdbfe !important;
+      font-size: 0.84rem;
+      color: #bae6fd;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .nav-qq-pill:hover {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: rgba(56, 189, 248, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta {
+      padding: 7px 15px;
+      border-radius: 999px;
+      background: rgba(96, 165, 250, 0.15);
+      border: 1px solid rgba(96, 165, 250, 0.38);
+      color: #dbeafe !important;
       font-weight: 500;
       transition: background 0.2s ease;
     }
 
     .nav-cta:hover {
-      background: rgba(96, 165, 250, 0.24);
+      background: rgba(96, 165, 250, 0.26);
     }
 
     /* Hero */
     .hero {
-      padding: 84px 0 64px;
+      padding: 76px 0 64px;
       text-align: center;
     }
 
@@ -143,8 +181,8 @@
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
+      gap: 7px;
+      padding: 5px 13px;
       border-radius: 999px;
       font-size: 0.8rem;
       color: var(--text-muted);
@@ -157,25 +195,26 @@
       height: 7px;
       border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
     }
 
     h1 {
-      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-size: clamp(2.15rem, 4.8vw, 3.55rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.15;
+      line-height: 1.16;
       margin-bottom: 18px;
-      background: linear-gradient(180deg, #ffffff 0%, #b8c4d9 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #c2cde0 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .hero-sub {
-      max-width: 640px;
-      margin: 0 auto 34px;
+      max-width: 650px;
+      margin: 0 auto 32px;
       color: var(--text-muted);
-      font-size: 1.06rem;
+      font-size: 1.07rem;
+      line-height: 1.7;
     }
 
     .download-group {
@@ -207,11 +246,11 @@
     .btn-primary {
       background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
       color: #ffffff;
-      box-shadow: 0 10px 28px rgba(59, 130, 246, 0.28);
+      box-shadow: 0 10px 28px rgba(59, 130, 246, 0.3);
     }
 
     .btn-primary:hover {
-      box-shadow: 0 14px 34px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 14px 36px rgba(59, 130, 246, 0.44);
     }
 
     .btn-secondary {
@@ -221,13 +260,50 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    /* Hero QQ Pill */
+    .hero-qq-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .hero-qq-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.09);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #e0f2fe;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-qq-pill:hover {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: rgba(56, 189, 248, 0.5);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.14);
+      transform: translateY(-1px);
+    }
+
+    .hero-qq-pill .qq-tag {
+      font-size: 0.76rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.2);
+      color: #7dd3fc;
+      font-weight: 600;
     }
 
     .download-meta {
       font-size: 0.84rem;
       color: var(--text-subtle);
-      margin-bottom: 48px;
+      margin-bottom: 44px;
     }
 
     .download-meta a {
@@ -236,18 +312,140 @@
       text-underline-offset: 3px;
     }
 
-    /* Spotlight Mockup */
-    .spotlight-window {
-      max-width: 760px;
+    /* Interactive Demo Showcase */
+    .demo-shell {
+      max-width: 820px;
       margin: 0 auto;
+    }
+
+    .demo-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .scene-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .scene-pill:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .scene-pill.active {
+      color: #ffffff;
+      background: rgba(96, 165, 250, 0.18);
+      border-color: rgba(96, 165, 250, 0.5);
+      box-shadow: 0 0 20px rgba(96, 165, 250, 0.18);
+    }
+
+    .scene-pill .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.5;
+    }
+
+    .scene-pill.active .live-dot {
+      background: var(--green);
+      opacity: 1;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .spotlight-window {
+      position: relative;
       border-radius: var(--radius-lg);
-      background: rgba(18, 22, 31, 0.88);
+      background: rgba(15, 19, 28, 0.92);
       border: 1px solid var(--border-strong);
       box-shadow:
-        0 30px 90px rgba(0, 0, 0, 0.65),
+        0 32px 90px rgba(0, 0, 0, 0.72),
+        0 0 60px rgba(59, 130, 246, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.04) inset;
       overflow: hidden;
       text-align: left;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    }
+
+    .spotlight-window.window-pop {
+      animation: windowPop 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes windowPop {
+      0% { transform: scale(0.96); opacity: 0.7; }
+      60% { transform: scale(1.01); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Top bar inside demo */
+    .demo-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.025);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    .demo-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .demo-dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .demo-dots span:nth-child(1) { background: rgba(248, 113, 113, 0.7); }
+    .demo-dots span:nth-child(2) { background: rgba(251, 191, 36, 0.7); }
+    .demo-dots span:nth-child(3) { background: rgba(52, 211, 153, 0.7); }
+
+    .demo-key-hud {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
+      transition: all 0.18s ease;
+    }
+
+    .kbd-flash {
+      background: rgba(96, 165, 250, 0.28) !important;
+      border-color: rgba(96, 165, 250, 0.85) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 16px rgba(96, 165, 250, 0.55);
+      transform: translateY(1px) scale(0.96);
     }
 
     .spotlight-search {
@@ -256,6 +454,7 @@
       gap: 12px;
       padding: 18px 22px;
       border-bottom: 1px solid var(--border);
+      min-height: 64px;
     }
 
     .spotlight-search svg {
@@ -265,27 +464,87 @@
 
     .spotlight-input {
       flex: 1;
-      font-size: 1.08rem;
+      font-size: 1.06rem;
       color: var(--text);
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      min-height: 26px;
+      word-break: break-all;
     }
 
-    .kbd {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.76rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.15em;
+      background: var(--accent);
+      margin-left: 3px;
+      animation: blinkCursor 0.85s infinite;
+    }
+
+    @keyframes blinkCursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .demo-status-pill {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
       color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.07);
       border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .demo-status-pill.scanning {
+      color: #93c5fd;
+      background: rgba(96, 165, 250, 0.14);
+      border-color: rgba(96, 165, 250, 0.35);
+    }
+
+    .demo-status-pill.done {
+      color: var(--green);
+      background: var(--green-bg);
+      border-color: var(--green-border);
+    }
+
+    /* Loading shimmer */
+    .demo-shimmer-wrap {
+      padding: 14px 16px;
+      display: none;
+      gap: 10px;
+    }
+
+    .demo-shimmer-wrap.visible {
+      display: grid;
+    }
+
+    .shimmer-row {
+      height: 54px;
+      border-radius: 11px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 25%,
+        rgba(96, 165, 250, 0.1) 50%,
+        rgba(255, 255, 255, 0.03) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmerMove 1.1s infinite linear;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    @keyframes shimmerMove {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     .spotlight-results {
-      padding: 10px 12px;
+      padding: 12px 14px 14px;
       display: grid;
-      gap: 6px;
+      gap: 8px;
+      min-height: 230px;
+      align-content: start;
     }
 
     .result-row {
@@ -293,35 +552,112 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 11px 14px;
-      border-radius: 11px;
-      background: rgba(255, 255, 255, 0.02);
+      padding: 12px 15px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid transparent;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.32s ease, transform 0.32s ease, background 0.25s ease, border-color 0.25s ease;
+    }
+
+    .result-row.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .result-row.active {
-      background: rgba(96, 165, 250, 0.13);
-      border: 1px solid rgba(96, 165, 250, 0.25);
+      background: rgba(96, 165, 250, 0.12);
+      border-color: rgba(96, 165, 250, 0.32);
+    }
+
+    .result-row.dead {
+      opacity: 0.55;
+      background: rgba(248, 113, 113, 0.04);
+      border-color: rgba(248, 113, 113, 0.14);
+    }
+
+    .result-row.dead.show {
+      opacity: 0.55;
     }
 
     .result-title {
-      font-size: 0.93rem;
-      font-weight: 500;
+      font-size: 0.94rem;
+      font-weight: 550;
       color: var(--text);
     }
 
     .result-sub {
-      font-size: 0.78rem;
+      font-size: 0.79rem;
       color: var(--text-subtle);
+      margin-top: 2px;
     }
 
     .pill-live {
-      font-size: 0.75rem;
-      padding: 3px 9px;
+      font-size: 0.76rem;
+      padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(52, 211, 153, 0.14);
-      color: var(--green);
-      border: 1px solid rgba(52, 211, 153, 0.25);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
       white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+
+    .pill-live.lit {
+      background: var(--green-bg);
+      color: var(--green);
+      border-color: var(--green-border);
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.22);
+    }
+
+    .pill-dead {
+      font-size: 0.76rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      white-space: nowrap;
+    }
+
+    /* Inner copy toast inside spotlight */
+    .demo-toast {
+      position: absolute;
+      right: 18px;
+      bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: #a7f3d0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+      pointer-events: none;
+      transition: opacity 0.26s ease, transform 0.26s ease;
+    }
+
+    .demo-toast.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .demo-footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.02);
+      border-top: 1px solid var(--border);
+      font-size: 0.77rem;
+      color: var(--text-subtle);
     }
 
     /* Sections */
@@ -335,15 +671,15 @@
     }
 
     .section-head h2 {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 700;
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+      font-weight: 750;
       letter-spacing: -0.02em;
       margin-bottom: 10px;
     }
 
     .section-head p {
       color: var(--text-muted);
-      font-size: 0.98rem;
+      font-size: 0.99rem;
     }
 
     /* Feature Grid */
@@ -354,40 +690,42 @@
     }
 
     .card {
-      padding: 26px;
+      padding: 28px;
       border-radius: var(--radius-md);
       background: var(--bg-card);
       border: 1px solid var(--border);
-      transition: background 0.2s ease, border-color 0.2s ease;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
     }
 
     .card:hover {
       background: var(--bg-card-hover);
       border-color: var(--border-strong);
+      transform: translateY(-2px);
     }
 
     .card-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
       display: grid;
       place-items: center;
       background: rgba(96, 165, 250, 0.12);
-      border: 1px solid rgba(96, 165, 250, 0.25);
+      border: 1px solid rgba(96, 165, 250, 0.26);
       color: var(--accent);
       margin-bottom: 16px;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
     }
 
     .card h3 {
-      font-size: 1.08rem;
+      font-size: 1.1rem;
       font-weight: 650;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
     }
 
     .card p {
       color: var(--text-muted);
-      font-size: 0.92rem;
+      font-size: 0.93rem;
+      line-height: 1.7;
     }
 
     /* Pricing */
@@ -400,7 +738,7 @@
     }
 
     .price-card {
-      padding: 30px;
+      padding: 32px;
       border-radius: var(--radius-lg);
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -410,9 +748,9 @@
     }
 
     .price-card.pro {
-      background: linear-gradient(180deg, rgba(59, 130, 246, 0.11) 0%, rgba(255, 255, 255, 0.03) 100%);
-      border-color: rgba(96, 165, 250, 0.42);
-      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.12);
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border-color: rgba(96, 165, 250, 0.45);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.13);
     }
 
     .price-tag {
@@ -424,11 +762,11 @@
       margin-bottom: 12px;
       background: rgba(251, 191, 36, 0.16);
       color: var(--amber);
-      border: 1px solid rgba(251, 191, 36, 0.3);
+      border: 1px solid rgba(251, 191, 36, 0.32);
     }
 
     .price-title {
-      font-size: 1.25rem;
+      font-size: 1.26rem;
       font-weight: 700;
       margin-bottom: 8px;
     }
@@ -441,7 +779,7 @@
     }
 
     .price-now {
-      font-size: 2.2rem;
+      font-size: 2.25rem;
       font-weight: 800;
       letter-spacing: -0.02em;
     }
@@ -483,6 +821,87 @@
       color: var(--text);
     }
 
+    /* Community Banner */
+    .community-section {
+      padding: 24px 0 16px;
+    }
+
+    .community-banner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 30px 32px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.34);
+      box-shadow: 0 20px 50px rgba(14, 165, 233, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .community-copy {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .community-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #7dd3fc;
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .community-copy h2 {
+      font-size: 1.45rem;
+      font-weight: 750;
+      margin-bottom: 6px;
+    }
+
+    .community-copy p {
+      color: var(--text-muted);
+      font-size: 0.93rem;
+    }
+
+    .community-action {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .btn-qq {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+      color: #ffffff;
+      font-size: 0.98rem;
+      font-weight: 650;
+      box-shadow: 0 10px 26px rgba(14, 165, 233, 0.28);
+      transition: transform 0.16s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-qq:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(14, 165, 233, 0.42);
+    }
+
+    .community-hint {
+      font-size: 0.79rem;
+      color: #93c5fd;
+    }
+
     /* FAQ */
     .faq-list {
       max-width: 860px;
@@ -507,6 +926,7 @@
     .faq-item p {
       font-size: 0.92rem;
       color: var(--text-muted);
+      line-height: 1.7;
     }
 
     code {
@@ -520,14 +940,48 @@
 
     footer {
       border-top: 1px solid var(--border);
-      padding: 32px 0 44px;
+      padding: 32px 0 46px;
       text-align: center;
       color: var(--text-subtle);
       font-size: 0.86rem;
     }
 
+    footer a:hover {
+      color: var(--text-muted);
+    }
+
+    /* Global Toast */
+    .global-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%) translateY(16px);
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: #d1fae5;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(16px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.24s ease, transform 0.24s ease;
+    }
+
+    .global-toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     @media (max-width: 760px) {
-      .nav-links {
+      .nav-links a:not(.nav-cta),
+      .nav-qq-pill {
         display: none;
       }
       .features-grid,
@@ -535,7 +989,22 @@
         grid-template-columns: 1fr;
       }
       .hero {
-        padding-top: 56px;
+        padding-top: 52px;
+      }
+      .community-banner {
+        padding: 24px 20px;
+      }
+      .community-action {
+        align-items: flex-start;
+        width: 100%;
+      }
+      .btn-qq {
+        width: 100%;
+        justify-content: center;
+      }
+      .result-row {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
@@ -548,9 +1017,12 @@
         <span>EchoBox</span>
       </a>
       <nav class="nav-links">
-        <a href="#features">核心特性</a>
-        <a href="#buy-pro">Free / Pro</a>
+        <a href="#features">核心功能</a>
+        <a href="#buy-pro">免费版 / Pro</a>
         <a href="#faq">常见问题</a>
+        <button type="button" class="nav-qq-pill" data-copy-qq="815135467" title="点击复制 QQ 群号">
+          <span>QQ 群：815135467</span>
+        </button>
         <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener" class="nav-cta">下载最新版</a>
       </nav>
     </div>
@@ -560,21 +1032,21 @@
     <section class="hero">
       <div class="container">
         <div class="badges">
-          <span class="badge"><span class="dot"></span> 当前版本 <span id="version-badge">v0.3.4</span></span>
-          <span class="badge">macOS Universal (M1-M4 / Intel)</span>
-          <span class="badge">Windows x64</span>
-          <span class="badge">纯本地 SQLite · 零隐私上传</span>
+          <span class="badge"><span class="dot"></span> 当前版本 <span id="version-badge">v0.4.0</span></span>
+          <span class="badge">支持苹果电脑 Mac（M 芯片 / Intel 通用）</span>
+          <span class="badge">支持 Windows 电脑（64 位）</span>
+          <span class="badge">全在本地跑 · 不用注册登录</span>
         </div>
 
-        <h1>一键呼出，全源秒搜</h1>
+        <h1>按下键盘就能搜，全网结果一秒聚齐</h1>
         <p class="hero-sub">
-          按下 <span class="kbd">Option + Space</span> 或 <span class="kbd">Alt + Space</span> 随叫随到。多源并发聚合、自动验活、回车直达。
+          不用再翻十几个网页找资源、点开十个九个失效。按一下快捷键，自动帮你聚齐并测出能打开的结果。
         </p>
 
         <div class="download-group">
           <a id="btn-macos" class="btn btn-primary" href="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.4.0/downloads/EchoBox-v0.4.0-macos-universal.zip">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3"/></svg>
-            <span>下载 macOS 版</span>
+            <span>下载苹果 Mac 版</span>
           </a>
           <a id="btn-windows" class="btn btn-secondary" href="https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.4.0/downloads/EchoBox-v0.4.0-windows-amd64.zip">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.45L10.94 4.3v7.1H3V5.45zm0 13.1l7.94 1.15v-7.05H3v5.9zm8.89-14.39L21 2.9v8.5h-9.11V4.16zm0 15.68L21 21.1v-8.45h-9.11v7.19z"/></svg>
@@ -582,37 +1054,70 @@
           </a>
         </div>
 
+        <div class="hero-qq-wrap">
+          <button type="button" class="hero-qq-pill" data-copy-qq="815135467">
+            <span>💬</span>
+            <span>QQ 交流与规则群：<strong>815135467</strong></span>
+            <span class="qq-tag">点击复制</span>
+          </button>
+        </div>
+
         <p class="download-meta">
-          也可前往 <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener">GitHub Releases</a> 查看全部历史版本与校验文件
+          也可前往 <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener">历史版本发布页</a> 查看全部安装包
         </p>
 
-        <div class="spotlight-window" aria-label="EchoBox 搜索窗口预览">
-          <div class="spotlight-search">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <div class="spotlight-input">Python 3.12 官方文档</div>
-            <span class="kbd">Option + Space</span>
+        <!-- Interactive Animated Product Demo -->
+        <div class="demo-shell">
+          <div class="demo-controls" role="tablist" aria-label="演示场景切换">
+            <button type="button" class="scene-pill active" data-scene="0">
+              <span class="live-dot"></span>
+              <span>1. 一键呼出搜索</span>
+            </button>
+            <button type="button" class="scene-pill" data-scene="1">
+              <span class="live-dot"></span>
+              <span>2. 自动过滤失效链接</span>
+            </button>
+            <button type="button" class="scene-pill" data-scene="2">
+              <span class="live-dot"></span>
+              <span>3. 粘贴 RSS 订阅秒变搜索源</span>
+            </button>
           </div>
-          <div class="spotlight-results">
-            <div class="result-row active">
-              <div>
-                <div class="result-title">Python 3.12.7 Documentation &amp; Offline HTML Bundle</div>
-                <div class="result-sub">官方开源文档 · 自定义规则源 · HTML/PDF</div>
+
+          <div class="spotlight-window" id="demo-window" aria-label="EchoBox 动态操作演示">
+            <div class="demo-topbar">
+              <div class="demo-dots">
+                <span></span><span></span><span></span>
+                <span style="background:none;width:auto;height:auto;margin-left:8px;color:var(--text-subtle);">EchoBox · 实时演示</span>
               </div>
-              <span class="pill-live">● 测活有效</span>
+              <div class="demo-key-hud">
+                <span>快捷键呼出：</span>
+                <span class="kbd" id="key-opt">Option</span>
+                <span>+</span>
+                <span class="kbd" id="key-space">Space</span>
+              </div>
             </div>
-            <div class="result-row">
-              <div>
-                <div class="result-title">Ubuntu 24.04.1 LTS Desktop (amd64) 官方镜像</div>
-                <div class="result-sub">开源镜像站 · 规则聚合 · 5.8 GB</div>
+
+            <div class="spotlight-search">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <div class="spotlight-input">
+                <span id="demo-typed"></span><span class="typing-cursor"></span>
               </div>
-              <span class="pill-live">● 测活有效</span>
+              <span class="demo-status-pill" id="demo-status">等待输入</span>
             </div>
-            <div class="result-row">
-              <div>
-                <div class="result-title">Awesome-Python 开源工具与框架合集</div>
-                <div class="result-sub">GitHub 开源检索 · 示例规则 · MIT</div>
-              </div>
-              <span class="pill-live">● 测活有效</span>
+
+            <div class="demo-shimmer-wrap" id="demo-shimmer">
+              <div class="shimmer-row"></div>
+              <div class="shimmer-row"></div>
+              <div class="shimmer-row"></div>
+            </div>
+
+            <div class="spotlight-results" id="demo-results"></div>
+
+            <div class="demo-toast" id="demo-toast">✓ 已复制到剪贴板</div>
+
+            <div class="demo-footer-bar">
+              <span id="demo-hint">按 ↑↓ 选择结果 · 回车直达 · 点击复制链接</span>
+              <span>按 Esc 立即收起</span>
             </div>
           </div>
         </div>
@@ -622,29 +1127,29 @@
     <section id="features">
       <div class="container">
         <div class="section-head">
-          <h2>为桌面效率而生的设计</h2>
-          <p>告别繁杂广告网页与失效链接，把多源规则检索放进系统级快捷键里</p>
+          <h2>简单顺手，装好就能用</h2>
+          <p>把平时打开十几个网站翻找的功夫，变成按一下键盘的事</p>
         </div>
         <div class="features-grid">
           <div class="card">
             <div class="card-icon">⌘</div>
-            <h3>Spotlight 全局唤起</h3>
-            <p>支持 macOS <code>Option + Space</code> 与 Windows <code>Alt + Space</code> 全局快捷键，任何界面一键呼出悬浮搜索框，ESC 即刻隐藏。</p>
+            <h3>按一下随时呼出</h3>
+            <p>不管你在看网页还是写文档，按一下 <code>Option + Space</code>（Mac）或 <code>Alt + Space</code>（Win）就能搜，用完按 <code>Esc</code> 立刻收起。</p>
           </div>
           <div class="card">
             <div class="card-icon">⚡</div>
-            <h3>多源规则聚合 + 可用性检测</h3>
-            <p>并发请求多个自定义 JSON / HTML 规则源，自动识别并过滤失效链接，实时标注可用状态，支持批量导出结果，省去逐个点开验证的时间。</p>
+            <h3>自动帮你挑出能打开的</h3>
+            <p>很多链接点进去早就失效了，EchoBox 会自动帮你试一遍，把还能用的标绿置顶，省时省心。</p>
           </div>
           <div class="card">
-            <div class="card-icon">🔄</div>
-            <h3>自定义 JSON / HTML 与 RSS / Atom 订阅</h3>
-            <p>支持导入与编写个人 JSON / HTML 解析规则、官方示范规则集，以及原生 <strong>RSS / Atom 订阅直接当搜索源</strong>，按需增量同步公开索引与开源仓库（如 GitHub / NPM / 公开文档库），统一聚合展示。</p>
+            <div class="card-icon">🔗</div>
+            <h3>贴个链接就能加新站点</h3>
+            <p>不会写代码也能用：直接贴入网站订阅链接（如常见的博客或资讯订阅），或者用内置的 AI 提示词 10 秒把常逛网站接进来。</p>
           </div>
           <div class="card">
             <div class="card-icon">🔒</div>
-            <h3>纯本地空壳，零隐私上传</h3>
-            <p>软件本体为纯本地桌面应用，所有搜索记录、订阅源配置与缓存均保存在本地 SQLite 数据库，不收集、不上传任何用户数据。</p>
+            <h3>全在本地跑，不用注册登录</h3>
+            <p>不用注册账号、不上传你的任何搜索记录，所有配置和记录都只存在你自己的电脑里，装好就能用。</p>
           </div>
         </div>
       </div>
@@ -653,21 +1158,21 @@
     <section id="buy-pro">
       <div class="container">
         <div class="section-head">
-          <h2>Free 免费版与 Pro 永久买断</h2>
-          <p>基础搜索永久免费，Pro 一次买断解锁完整效率体验</p>
+          <h2>免费版与 Pro 永久买断</h2>
+          <p>基础搜索永久免费，Pro 一次买断解锁完整体验，不用按月续费</p>
         </div>
         <div class="pricing-grid">
           <div class="price-card">
             <div>
-              <div class="price-title">Free 免费版</div>
+              <div class="price-title">免费版</div>
               <div class="price-amount">
                 <span class="price-now">¥0</span>
               </div>
               <ul class="price-list">
-                <li>Spotlight 全局快捷键唤起</li>
-                <li>示范规则集与本地规则导入</li>
-                <li>多规则源并发聚合搜索</li>
-                <li>纯本地 SQLite 存储，零隐私上传</li>
+                <li>按快捷键随时呼出搜索框</li>
+                <li>内置常用示范站点，装好就能用</li>
+                <li>同时搜索多个网站并汇总结果</li>
+                <li>全在本地电脑运行，不用注册登录</li>
               </ul>
             </div>
             <a href="https://github.com/SilasSolivagus/echobox-site/releases/latest" target="_blank" rel="noopener" class="btn btn-secondary">免费下载使用</a>
@@ -682,10 +1187,10 @@
                 <span class="price-old">原价 ¥39</span>
               </div>
               <ul class="price-list">
-                <li>包含 Free 免费版全部功能</li>
-                <li>无限自定义订阅源导入与管理</li>
-                <li>高并发批量链接自动测活</li>
-                <li>离线激活码授权，一次买断永久有效</li>
+                <li>包含免费版全部功能</li>
+                <li>无限添加常逛网站与订阅链接</li>
+                <li>自动检测链接是否有效，失效自动靠后</li>
+                <li>一次买断永久有效，换电脑也能用</li>
               </ul>
             </div>
             <a href="https://afdian.com/item/37f6cb2ee30111f1b53252540025c377" target="_blank" rel="noopener" class="btn btn-primary">立即购买 Pro 激活码</a>
@@ -694,7 +1199,25 @@
 
         <div id="buy-guide" class="buy-guide-box">
           <strong>官方购买与激活说明：</strong>
-          EchoBox Pro 永久激活码已在爱发电官方小店上架：<a href="https://afdian.com/item/37f6cb2ee30111f1b53252540025c377" target="_blank" rel="noopener" style="color: #93c5fd; text-decoration: underline;">点击直达购买页</a>（官方主页：<a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener" style="color: #93c5fd; text-decoration: underline;">afdian.com/a/echoboxpro</a>）。下单获取 Pro 离线激活码后，在 EchoBox 客户端右上角「激活 Pro」粘贴即可永久解锁全部高级功能。
+          EchoBox Pro 永久激活码已在爱发电官方小店上架：<a href="https://afdian.com/item/37f6cb2ee30111f1b53252540025c377" target="_blank" rel="noopener" style="color: #93c5fd; text-decoration: underline;">点击直达购买页</a>（官方主页：<a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener" style="color: #93c5fd; text-decoration: underline;">afdian.com/a/echoboxpro</a>）。下单获取激活码后，在软件右上角「激活 Pro」粘贴即可永久解锁全部功能。
+        </div>
+      </div>
+    </section>
+
+    <section class="community-section" aria-label="QQ 交流群">
+      <div class="container">
+        <div class="community-banner">
+          <div class="community-copy">
+            <span class="community-badge">官方交流群</span>
+            <h2>不会加网站？进群直接领现成配置</h2>
+            <p>欢迎加入 EchoBox 官方 QQ 交流与规则群，分享好用的搜索站点配置、用 AI 10 秒接入常逛网站，使用中遇到任何问题也可以直接在群里问。</p>
+          </div>
+          <div class="community-action">
+            <button type="button" class="btn-qq" data-copy-qq="815135467">
+              <span>复制 QQ 群号：815135467</span>
+            </button>
+            <span class="community-hint">点击按钮自动复制群号</span>
+          </div>
         </div>
       </div>
     </section>
@@ -702,39 +1225,39 @@
     <section id="faq">
       <div class="container">
         <div class="section-head">
-          <h2>常见问题 (FAQ)</h2>
-          <p>首次安装与激活说明</p>
+          <h2>常见问题</h2>
+          <p>第一次安装和使用的小提示</p>
         </div>
         <div class="faq-list">
           <div class="faq-item">
-            <h3>1. macOS 提示“无法验证开发者”或“已损坏”怎么办？</h3>
+            <h3>1. 苹果电脑（Mac）提示“无法验证开发者”或“已损坏”怎么办？</h3>
             <p>
-              由于开源桌面版暂未购买 Apple 开发者年费签名，首次打开时可在「访达 → 应用程序」中<strong>右键点击 EchoBox.app → 打开</strong>；若仍提示已损坏，可在终端执行一次：
-              <code>xattr -cr /Applications/EchoBox.app</code> 后即可正常打开。
+              因为软件目前没有购买苹果官方的年度认证签名，首次打开时请在「访达 → 应用程序」里<strong>右键点击 EchoBox → 打开</strong>；如果还是提示已损坏，打开 Mac 的“终端”应用，复制粘贴下面这行命令并回车即可正常打开：
+              <code>xattr -cr /Applications/EchoBox.app</code>
             </p>
           </div>
           <div class="faq-item">
-            <h3>2. Windows 提示 SmartScreen“Windows 已保护你的电脑”怎么办？</h3>
+            <h3>2. Windows 电脑提示“Windows 已保护你的电脑”怎么办？</h3>
             <p>
-              未购买商业 EV 代码签名的独立软件均会触发该提示。点击弹窗中的<strong>「更多信息」</strong>，然后点击底部的<strong>「仍要运行」</strong>即可启动 EchoBox。
+              独立开发的小工具在没有购买微软付费认证前都会弹出这个提醒。只需点击弹窗里的<strong>「更多信息」</strong>，再点击底部的<strong>「仍要运行」</strong>就能正常启动。
             </p>
           </div>
           <div class="faq-item">
-            <h3>3. Pro 离线激活码如何使用？更换设备怎么办？</h3>
+            <h3>3. Pro 激活码怎么使用？以后换电脑怎么办？</h3>
             <p>
-              EchoBox 采用本地离线激活校验机制，无需联网验证服务器。在软件「设置 → Pro 激活」中输入激活码即可立即解锁全部功能，重装系统后使用同一激活码即可恢复。
+              在软件右上角或「设置 → 激活 Pro」里粘贴收到的激活码，点一下就能立刻解锁。激活码永久有效，以后重装系统或换新电脑，输入同一串激活码就能恢复 Pro 权限。
             </p>
           </div>
           <div class="faq-item">
-            <h3>4. 《合规与免责声明》EchoBox 是否提供或存储任何第三方链接或文件？</h3>
+            <h3>4. 《合规与免责声明》EchoBox 会提供或保存网上的文件或链接吗？</h3>
             <p>
               EchoBox 为纯本地规则解析与信息聚合搜索工具，不托管、不存储、不索引也不分发任何第三方链接、文件或受版权保护的内容。所有搜索规则与检索目标均由用户自行配置或导入，请仅将本工具用于合法合规的公开信息、开源项目与个人授权资料检索。
             </p>
           </div>
           <div class="faq-item">
-            <h3>5. 在哪里交流规则编写或反馈问题？</h3>
+            <h3>5. 在哪里领取现成站点配置或反馈问题？</h3>
             <p>
-              欢迎加入官方规则交流与反馈 QQ 群：<strong>815135467</strong>，分享 JSON / HTML / RSS 规则配置、获取最新示范规则集或反馈使用建议。
+              欢迎加入官方 QQ 交流与规则群：<strong>815135467</strong>（<button type="button" data-copy-qq="815135467" style="color:#7dd3fc;text-decoration:underline;font-size:inherit;">点此复制群号</button>），群里有现成好用的配置分享，也可以直接向作者反馈问题和建议。
             </p>
           </div>
         </div>
@@ -744,12 +1267,242 @@
 
   <footer>
     <div class="container">
-      <p>EchoBox · 极简桌面信息聚合搜索器 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">Releases</a> · <a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener">爱发电官方主页</a> · 规则交流与反馈 QQ 群：815135467</p>
+      <p>EchoBox · 桌面聚合搜索工具 · <a href="https://github.com/SilasSolivagus/echobox-site/releases" target="_blank" rel="noopener">安装包下载</a> · <a href="https://afdian.com/a/echoboxpro" target="_blank" rel="noopener">爱发电官方主页</a> · QQ 交流与规则群：<button type="button" data-copy-qq="815135467" style="color:inherit;text-decoration:underline;font-size:inherit;">815135467</button></p>
       <p style="margin-top: 8px; font-size: 0.8rem;">合规与免责声明：EchoBox 为纯本地规则解析工具，不托管、不存储、不分发任何第三方链接或文件。</p>
     </div>
   </footer>
 
+  <div class="global-toast" id="global-toast" role="status" aria-live="polite">
+    <span>✓</span>
+    <span id="global-toast-text">已复制 QQ 群号</span>
+  </div>
+
   <script>
+    // 1. Copy QQ group number with toast feedback
+    (function setupQQCopy() {
+      const toast = document.getElementById("global-toast");
+      const toastText = document.getElementById("global-toast-text");
+      let toastTimer = null;
+
+      function showGlobalToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add("visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("visible");
+        }, 2200);
+      }
+
+      async function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch (_) {}
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (_) {}
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      document.querySelectorAll("[data-copy-qq]").forEach((el) => {
+        el.addEventListener("click", async () => {
+          const qq = el.getAttribute("data-copy-qq") || "815135467";
+          await copyText(qq);
+          showGlobalToast("已复制 QQ 群号：" + qq);
+        });
+      });
+    })();
+
+    // 2. Animated interactive product demo in Hero Spotlight window
+    (function setupDemoAnimation() {
+      const scenes = [
+        {
+          query: "效率工具 合集",
+          hint: "按 ↑↓ 选择结果 · 回车直达 · 点击复制链接",
+          scanningText: "正在聚齐 6 个网站...",
+          doneText: "已聚齐 3 条可用结果",
+          toastText: "✓ 已复制到剪贴板",
+          rows: [
+            { title: "Mac / Win 装机必备免费开源工具清单", sub: "常用软件库 · 官网直链 · 今日更新", status: "live", badge: "● 可用" },
+            { title: "无广告桌面截图与录屏工具合集（2026 版）", sub: "数码分享站 · 绿色免安装版", status: "live", badge: "● 可用" },
+            { title: "高颜值免费图标与壁纸素材站汇总", sub: "设计资源站 · 可直接打包下载", status: "live", badge: "● 可用" }
+          ]
+        },
+        {
+          query: "电子书 阅读器 下载",
+          hint: "自动试连每个结果 · 能用的标绿置顶，失效自动靠后",
+          scanningText: "正在逐个检测能否打开...",
+          doneText: "已过滤 1 个失效链接",
+          toastText: "✓ 已复制有效链接到剪贴板",
+          rows: [
+            { title: "轻量级本地电子书阅读器（支持多格式）", sub: "软件镜像站 · 已通过连接测试", status: "live", badge: "● 可用" },
+            { title: "跨平台阅读笔记同步工具 · 官网下载页", sub: "官方下载页 · 打开速度极快", status: "live", badge: "● 可用" },
+            { title: "某旧版网盘分享链接（原页面已删除）", sub: "历史收录站点 · 检测到 404 无法访问", status: "dead", badge: "✕ 已失效" }
+          ]
+        },
+        {
+          query: "https://sspai.com/feed",
+          hint: "直接粘贴网站订阅链接，1 秒变成专属搜索源",
+          scanningText: "正在识别网站订阅...",
+          doneText: "✓ 已加入搜索源：少数派",
+          toastText: "✓ 已复制新站点订阅结果",
+          rows: [
+            { title: "新搜索源已就绪：少数派（每日精选文章）", sub: "订阅链接已接入 · 以后搜关键词自动包含本站", status: "live", badge: "● 可用" },
+            { title: "效率技巧：如何用快捷键把工作时间省一半", sub: "来自刚添加的订阅 · 2 小时前更新", status: "live", badge: "● 可用" },
+            { title: "不会写规则？打开内置 AI 提示词 10 秒生成", sub: "零代码接入任何常逛网站 · 支持一键导入", status: "live", badge: "● 可用" }
+          ]
+        }
+      ];
+
+      const demoWindow = document.getElementById("demo-window");
+      const typedEl = document.getElementById("demo-typed");
+      const statusEl = document.getElementById("demo-status");
+      const shimmerEl = document.getElementById("demo-shimmer");
+      const resultsEl = document.getElementById("demo-results");
+      const toastEl = document.getElementById("demo-toast");
+      const hintEl = document.getElementById("demo-hint");
+      const keyOpt = document.getElementById("key-opt");
+      const keySpace = document.getElementById("key-space");
+      const pills = Array.from(document.querySelectorAll(".scene-pill"));
+
+      let currentScene = 0;
+      let runToken = 0;
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      function setActivePill(idx) {
+        pills.forEach((p, i) => p.classList.toggle("active", i === idx));
+      }
+
+      async function playScene(idx) {
+        const token = ++runToken;
+        currentScene = idx;
+        setActivePill(idx);
+        const scene = scenes[idx];
+
+        // Reset UI
+        typedEl.textContent = "";
+        resultsEl.innerHTML = "";
+        resultsEl.style.display = "none";
+        shimmerEl.classList.remove("visible");
+        toastEl.classList.remove("visible");
+        toastEl.textContent = scene.toastText;
+        hintEl.textContent = scene.hint;
+        statusEl.className = "demo-status-pill";
+        statusEl.textContent = "等待输入";
+
+        // Step 1: Keycap flash + window pop
+        keyOpt.classList.add("kbd-flash");
+        keySpace.classList.add("kbd-flash");
+        demoWindow.classList.remove("window-pop");
+        void demoWindow.offsetWidth;
+        demoWindow.classList.add("window-pop");
+        await sleep(360);
+        if (token !== runToken) return;
+        keyOpt.classList.remove("kbd-flash");
+        keySpace.classList.remove("kbd-flash");
+
+        // Step 2: Type query character by character
+        const chars = Array.from(scene.query);
+        const isPaste = scene.query.startsWith("http");
+        if (isPaste) {
+          // Simulate quick paste of URL
+          await sleep(180);
+          if (token !== runToken) return;
+          typedEl.textContent = scene.query;
+        } else {
+          for (let i = 0; i < chars.length; i++) {
+            if (token !== runToken) return;
+            typedEl.textContent += chars[i];
+            await sleep(72);
+          }
+        }
+        await sleep(220);
+        if (token !== runToken) return;
+
+        // Step 3: Loading shimmer
+        statusEl.className = "demo-status-pill scanning";
+        statusEl.textContent = scene.scanningText;
+        shimmerEl.classList.add("visible");
+        await sleep(820);
+        if (token !== runToken) return;
+
+        // Step 4: Hide shimmer, render & stagger results
+        shimmerEl.classList.remove("visible");
+        resultsEl.style.display = "grid";
+
+        const rowEls = scene.rows.map((row, rIdx) => {
+          const div = document.createElement("div");
+          div.className = "result-row" + (rIdx === 0 ? " active" : "") + (row.status === "dead" ? " dead" : "");
+          const pillClass = row.status === "dead" ? "pill-dead" : "pill-live";
+          div.innerHTML = `
+            <div>
+              <div class="result-title">${row.title}</div>
+              <div class="result-sub">${row.sub}</div>
+            </div>
+            <span class="${pillClass}">${row.status === "dead" ? row.badge : "● 检测中..."}</span>
+          `;
+          resultsEl.appendChild(div);
+          return { div, row };
+        });
+
+        for (let i = 0; i < rowEls.length; i++) {
+          if (token !== runToken) return;
+          rowEls[i].div.classList.add("show");
+          await sleep(140);
+        }
+
+        // Step 5: Light up green ● 可用 badges
+        await sleep(220);
+        if (token !== runToken) return;
+        for (let i = 0; i < rowEls.length; i++) {
+          if (token !== runToken) return;
+          if (rowEls[i].row.status === "live") {
+            const badge = rowEls[i].div.querySelector(".pill-live");
+            if (badge) {
+              badge.textContent = rowEls[i].row.badge;
+              badge.classList.add("lit");
+            }
+          }
+          await sleep(120);
+        }
+
+        statusEl.className = "demo-status-pill done";
+        statusEl.textContent = scene.doneText;
+
+        // Step 6: Show copy toast
+        await sleep(380);
+        if (token !== runToken) return;
+        toastEl.classList.add("visible");
+
+        // Hold for reading, then advance to next scene automatically
+        await sleep(3400);
+        if (token !== runToken) return;
+        playScene((currentScene + 1) % scenes.length);
+      }
+
+      pills.forEach((pill, i) => {
+        pill.addEventListener("click", () => {
+          playScene(i);
+        });
+      });
+
+      playScene(0);
+    })();
+
+    // 3. Hydrate latest release tag dynamically if GitHub API is reachable
     (async function hydrateLatestRelease() {
       const api = "https://api.github.com/repos/SilasSolivagus/echobox-site/releases/latest";
       try {
