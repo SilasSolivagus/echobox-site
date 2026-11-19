@@ -1,0 +1,9 @@
+{
+  "version": "0.5.1",
+  "notes": "1. 新增应用内静默检查更新与一键下载安装包\n2. 优化两步对话式 AI 规则生成与规则广场引导",
+  "release_page": "https://silassolivagus.github.io/echobox-site/",
+  "downloads": {
+    "darwin": "https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.5.1/downloads/EchoBox-v0.5.1-macos-universal.zip",
+    "windows": "https://cdn.jsdelivr.net/gh/SilasSolivagus/echobox-site@v0.5.1/downloads/EchoBox-v0.5.1-windows-amd64.zip"
+  }
+}
